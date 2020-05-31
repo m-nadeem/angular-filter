@@ -1,0 +1,199 @@
+<nas-accordion *ngIf="deviceHelper?.isMobile() && exists(minimizeOnMobile); else filterTemplate"
+  simple
+  containerOnToggle
+  transparent
+  [title]="editSearchTitle"
+  (toggleChange)="onAccordionToggleChange($event)">
+  <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+</nas-accordion>
+<div class="container"
+  *ngIf="deviceHelper?.isMobile() && exists(minimizeOnMobile) && displaySummary">{{getSummary()}}</div>
+
+<ng-template #filterTemplate>
+  <div #container
+    [nasClass]="getContainerClass()">
+    <div [nasClass]="getFilterClass('filters', [exists(minimize) && 'minimized', maximize && 'maximize'])"
+      *ngIf="airports && airportRelations">
+      <nas-airport-select #airportSelect
+        combo
+        [ariaLabelClear]="ariaLabelClear"
+        [ariaLabelBackdrop]="ariaLabelBackdrop"
+        [nasFormGroup]="nasFormGroup"
+        [nasFormControlNameOrigin]="nasFormControlNameOrigin"
+        [nasFormControlNameDestination]="nasFormControlNameDestination"
+        [useSwitch]="useSwitch"
+        [nasClass]="getAirportSelectClass()"
+        [airports]="airports"
+        [allowedOriginAiports]="allowedOriginAirports"
+        [allowedDestinationAirports]="allowedDestinationAirports"
+        [airportRelations]="airportRelations"
+        [latestSearchesOrigin]="latestSearchesOrigin"
+        [latestSearchesDestination]="latestSearchesDestination"
+        [displayLatestSearches]="displayLatestSearches"
+        [displayClosestAirports]="displayClosestAirports"
+        [originAirportCode]="originAirportCode"
+        [destinationAirportCode]="destinationAirportCode"
+        [allAirportsLabel]="allAirportsLabel"
+        [latestSearchesLabel]="latestSearchesLabel"
+        [closestAirportsLabel]="closestAirportsLabel"
+        [closestAirports]="closestAirports"
+        [selectOriginFirstLabel]="selectOriginFirstLabel"
+        [labelOrigin]="labelOrigin"
+        [placeholderOrigin]="placeholderOrigin"
+        [labelDestination]="labelDestination"
+        [geolocationLabel]="geolocationLabel"
+        [geolocationBlockedLabel]="geolocationBlockedLabel"
+        [placeholderDestination]="placeholderDestination"
+        [keepSelection]="keepSelection"
+        [invalidDestinationText]="invalidDestinationText"
+        (originChange)="setSelectedOriginAirport($event)"
+        (destinationChange)="onDestinationChange($event)"
+        (focusOnNext)="setFocusOnPassengerSelect($event)"
+        (originOpenChange)="onOriginOpen($event)"
+        (destinationOpenChange)="onDestinationOpen($event)"
+        (positionChange)="getClosestAirports($event)"></nas-airport-select>
+      <nas-suggestions *ngIf="(closestAirports || latestSearchesOrigin) && exists(enableSuggestions)"
+        [nasClass]="getFilterClass('suggestions')"
+        [suggestions]="getSuggestions()"
+        [orLabel]="orLabel"
+        (airportSelect)="setSelectedOriginAirport($event)"></nas-suggestions>
+      <ng-container *ngIf="shouldMaximize()">
+        <div
+          [nasClass]="getTravelDetailsClass('', ['combined', exists(enableDatepickers) && 'no-border', exists(minimize) && 'minimized'])">
+          <ng-container *ngIf="enablePassengersSelect">
+            <nas-dropdown #passengerSelectDropdown
+              *ngIf="passengers?.length > 0"
+              [nasClass]="getTravelDetailsClass('dropdown', 'passengers')"
+              [cssClass]="getTravelDetailsClass('dropdown')"
+              [label]="passengerSelectLabel"
+              [labelStyle]="{'width': '102px'}"
+              [ariaLabelBackdrop]="ariaLabelBackdrop"
+              (openChange)="onPassengerSelectOpen($event)"
+              (keydown)="passengerKeyDown($event)">
+              <nas-passenger-select #passengerSelect
+                [ariaLabelAdd]="ariaLabelAdd"
+                [ariaLabelSubtract]="ariaLabelSubtract"
+                [adultsLabel]="passengerSelectAdultsLabel"
+                [childrenLabel]="passengerSelectChildrenLabel"
+                [infantsLabel]="passengerSelectInfantsLabel"
+                [maxPaxCount]="maxPaxCount"
+                [minAdultCount]="minAdultCount"
+                [title]="passengerSelectTitle"
+                [nasFormGroup]="nasFormGroup"
+                [nasFormControlGroupBooking]="nasFormControlGroupBooking"
+                [groupBookingLabel]="groupBookingLabel"
+                [groupBookingLimit]="groupBookingLimit"
+                (focusOnNext)="onPassengersSelectFocusOnNext()"
+                (focusOnPrevious)="onPassengersSelectFocusOnPrevious()"
+                [(passengers)]="passengers"></nas-passenger-select>
+            </nas-dropdown>
+          </ng-container>
+          <ng-container *ngIf="enableTripSwitch">
+            <nas-dropdown *ngIf="tripSwitchOneWayLabel && tripSwitchRoundTripLabel"
+              #tripSwitch
+              [nasClass]="getTravelDetailsClass('dropdown', 'trip-type')"
+              [cssClass]="getTravelDetailsClass('dropdown')"
+              [label]="getTripSwitchLabel()"
+              [ariaLabelBackdrop]="ariaLabelBackdrop"
+              (openChange)="onTripSwitchOpen($event)"
+              (keydown)="onTripSwitchKeyDown($event)">
+              <div [nasClass]="getTravelDetailsClass('actions')">
+                <button type="button"
+                  #tripTypeRoundTrip
+                  [nasClass]="getTravelDetailsClass('action', tripType === 2 && 'active')"
+                  (click)="onTripTypeChange(2)">
+                  <nas-icon [type]="'medium'"
+                    [icon]="tripType === 2 ? 'flight-return--light' : 'flight-return'"></nas-icon>
+                  <span [nasClass]="getTravelDetailsClass('title', 'small')">{{tripSwitchRoundTripLabel}}</span>
+                </button>
+                <button type="button"
+                  #tripTypeOneway
+                  [nasClass]="getTravelDetailsClass('action', tripType === 1 && 'active')"
+                  (click)="onTripTypeChange(1)">
+                  <nas-icon [type]="'medium'"
+                    [icon]="tripType === 1 ? 'flight-oneway--light' : 'flight-oneway'"></nas-icon>
+                  <span [nasClass]="getTravelDetailsClass('title', ['small'])">{{tripSwitchOneWayLabel}}</span>
+                </button>
+              </div>
+            </nas-dropdown>
+          </ng-container>
+          <ng-container *ngIf="enableTransitSwitch">
+            <nas-dropdown *ngIf="directOnlyLabel && directTransitLabel"
+              #transitSwitch
+              [nasClass]="getTravelDetailsClass('dropdown', 'transit-type')"
+              [cssClass]="getTravelDetailsClass('dropdown')"
+              [label]="getTransitLabel()"
+              [ariaLabelBackdrop]="ariaLabelBackdrop"
+              (openChange)="onTransitSwitchOpen($event)"
+              (keydown)="transitKeyDown($event)">
+              <div [nasClass]="getTravelDetailsClass('actions')">
+                <button type="button"
+                  #transitTypeTransit
+                  [nasClass]="getTravelDetailsClass('action', !directOnly && 'active')"
+                  (click)="onTransitChange(false)">
+                  <span [nasClass]="getTravelDetailsClass('transit-icon')">
+                    <span [nasClass]="getTravelDetailsClass('transit-icon-stop')"></span>
+                  </span>
+                  <span [nasClass]="getTravelDetailsClass('title', 'small')">{{directTransitLabel}}</span>
+                </button>
+                <button [nasClass]="getTravelDetailsClass('action', directOnly && 'active')"
+                  type="button"
+                  #transitTypeDirectOnly
+                  (click)="onTransitChange(true)">
+                  <span [nasClass]="getTravelDetailsClass('transit-icon')"></span>
+                  <span [nasClass]="getTravelDetailsClass('title', 'small')">{{directOnlyLabel}}</span>
+                </button>
+              </div>
+            </nas-dropdown>
+          </ng-container>
+        </div>
+        <div *ngIf="exists(enableDatepickers)"
+          [nasClass]="getDatePickersClass()">
+          <nas-datepicker-combo #datepickerCombo
+            compact
+            [nasFormGroup]="nasFormGroup"
+            [nasFormControlNameOutbound]="nasFormControlNameOutbound"
+            [nasFormControlNameInbound]="nasFormControlNameInbound"
+            [availability]="availability"
+            [availableFlightsLabel]="availableFlightsLabel"
+            [dateDisplayFormat]="dateDisplayFormat"
+            [disablePastSelection]="disablePastSelection"
+            [locale]="locale"
+            [noAvailableFlightsLabel]="noAvailableFlightsLabel"
+            [inboundAvailableDates]="inboundAvailableDates"
+            [inboundLabel]="inboundLabel"
+            [noAvailableFlightsLabel]="noAvailableFlightsLabel"
+            [outboundAvailableDates]="outboundAvailableDates"
+            [outboundLabel]="outboundLabel"
+            [timeDisplayFormat]="timeDisplayFormat"
+            [times]="times"
+            [outboundDisabled]="outboundDisabled"
+            [inboundDisabled]="inboundDisabled"
+            [outboundOnly]="tripType === 1"
+            [ariaLabelBackdrop]="ariaLabelBackdrop"
+            [ariaLabelPreviousMonth]="ariaLabelPreviousMonth"
+            [ariaLabelNextMonth]="ariaLabelNextMonth"
+            (focusOnNextChange)="onFocusOnNextChange($event)"
+            (focusOnPreviousChange)="onDatepickerFocusOnPrevious($event)"
+            (inboundMonthChange)="onInboundMonthChange($event)"
+            (outboundMonthChange)="onOutboundMonthChange($event)"
+            [(outboundOpen)]="outboundOpen"
+            [(inboundOpen)]="inboundOpen"
+            [(inboundSelectedDate)]="inboundSelectedDate"
+            [(outboundSelectedDate)]="outboundSelectedDate">
+          </nas-datepicker-combo>
+        </div>
+        <div *ngIf="subsidyDiscounts && subsidyDiscounts.length > 0"
+          [nasClass]="getFilterClass('subsidy-discount')">
+          <nas-subsidy-discount #subsidyDiscount
+            [discounts]="subsidyDiscounts"
+            [selectedDiscount]="selectedSubsidyDiscount"
+            [label]="subsidyDiscountLabel"
+            (infoButtonClick)="onSubsidyDiscountInfoClick()"
+            (discountSelectChange)="onSubsidyDiscountSelectChange($event)"
+            (infoButtonKeydown)="onSubsidyDiscountInfoButtonKeydown($event)"></nas-subsidy-discount>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

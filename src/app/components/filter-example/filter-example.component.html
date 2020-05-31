@@ -1,0 +1,14 @@
+<app-filter *ngIf="airports" [ariaLabelClear]="'Clear'" [originAirportCode]="exampleAirports?.origin"
+[destinationAirportCode]="exampleAirports?.destination" [enableDatepickers]="true"
+[enablePassengersSelect]="true" [enableTripSwitch]="true"
+[enableTransitSwitch]="true" [allAirportsLabel]="'All airports'" [minimize]="false"
+[useSwitch]="true" [airports]="airports" [airportRelations]="airportRelations" [labelOrigin]="'Origin'"
+[labelDestination]="'to' | titlecase" [passengerSelectLabel]="'1 passenger'" [passengers]="passengers"
+[tripSwitchRoundTripLabel]="'Round trip'" [tripSwitchOneWayLabel]="'One way'" [directOnlyLabel]="'Direct'"
+[directTransitLabel]="'Direct/transit'" [tripType]="2" [subsidyDiscountLabel]="'Subsidy discounts'"
+[subsidyDiscounts]="subsidyDiscounts" [passengerSelectAdultsLabel]="'Adults'"
+[passengerSelectChildrenLabel]="'Children'" [passengerSelectInfantsLabel]="'Infants'"
+[outboundLabel]="'Outbound date'" [inboundLabel]="'Inbound date'" [ariaLabelAdd]="'Add'"
+[ariaLabelSubtract]="'Subtract'" [ariaLabelBackdrop]="'Backdrop'" [minAdultCount]="1"
+[(outboundSelectedDate)]="outboundSelectedDateExample" [(inboundSelectedDate)]="inboundSelectedDateExample">
+</app-filter>

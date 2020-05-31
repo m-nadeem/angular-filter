@@ -1,0 +1,554 @@
+@import "../../../../node_modules/@norwegian/core-components/styles/helpers";
+
+.nas-filter {
+  $this: &;
+  background-color: $color-background;
+  position: relative;
+  z-index: 6;
+
+  &__title {
+    margin-top: $spacing;
+    @include font-size(large);
+
+    &--md {
+      margin-top: $spacing--xxlarge;
+    }
+  }
+
+  &__filters {
+    margin-top: $spacing--small;
+    display: flex;
+    flex-wrap: wrap;
+    order: 2;
+
+    .nas-filter {
+      &__date-combo {
+        order: 2;
+        flex: 1;
+        z-index: 2;
+
+        &--minimized {
+          @include flip-in;
+        }
+      }
+    }
+
+    &--minimized {
+      #{$this}__airport-select {
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: -($spacing--xxxsmall);
+          left: 0px;
+          width: 100%;
+          border-bottom: $border-width--large solid color(neutral, light);
+        }
+      }
+    }
+
+    &--maximize {
+      .nas-filter__airport-select {
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+    &--md {
+      .nas-filter__date-combo {
+        flex: 0 0 100%;
+      }
+    }
+
+    &--lg {
+      display: flex;
+      align-items: stretch;
+
+      .nas-filter__date-combo {
+        order: 3;
+        flex: 0 0 100%;
+        z-index: 1;
+      }
+
+      .nas-filter__suggestions {
+        order: 3;
+      }
+
+      .nas-filter__filters--minimized {
+        .nas-filter__airport-select {
+          margin-right: 0;
+          flex: 0 1 100%;
+        }
+      }
+
+      .nas-filter__filters--maximize {
+        .nas-filter__airport-select {
+          margin-right: $spacing--xxxsmall;
+          flex: auto;
+        }
+      }
+
+      &.nas-filter__filters--maximize {
+        .nas-filter__date-combo {
+          border-bottom: $border-width--large solid color(neutral, light);
+        }
+      }
+    }
+  }
+
+  &__suggestions {
+    flex-basis: 100%;
+    position: relative;
+    margin-top: $spacing--xxxsmall;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -($spacing--xxxsmall);
+      left: 0px;
+      width: 100%;
+      border-top: $border-width--large solid color(neutral, light);
+    }
+  }
+
+  &__airport-select {
+    order: 0;
+    flex: 0 0 100%;
+    position: relative;
+
+    &--lg {
+      width: 0;
+      margin: 0 $spacing 0 0;
+      margin: 0 $border-width--large 0 0;
+      flex: 1 1 auto;
+    }
+  }
+
+  &__toggler {
+    @include font(base, normal);
+    @include font-size(xregular);
+    color: color(secondary, base);
+    margin-top: $spacing--xxsmall;
+    z-index: 1;
+
+    #{$this}__toggle-action {
+      cursor: pointer;
+      margin-top: $border-width;
+      float: right;
+    }
+
+    #{$this}__direct-only {
+      display: inline-block;
+    }
+  }
+}
+
+.travel-details {
+  $this: &;
+  position: relative;
+  display: flex;
+  margin: 0px;
+  flex-wrap: wrap;
+  z-index: 1;
+
+  &__list {
+    margin-top: $spacing--small;
+  }
+
+  &__list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: $spacing--xxsmall 0 0;
+
+    &:not(:last-child) {
+      padding: $spacing--xxsmall 0 $spacing--xsmall;
+      border-bottom: $border-width solid color(neutral, xxxlight);
+    }
+  }
+
+  &__label {
+    flex-grow: 2;
+    margin: 0;
+    margin-right: 6px;
+  }
+
+  &__title {
+    @include font-size(xregular);
+    display: block;
+    min-width: 124px;
+
+    &--small {
+      @include font-size(small);
+      margin: 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+  }
+
+  &__action {
+    padding: $spacing--small;
+    width: 100%;
+    background-color: $color-light;
+
+    &:hover,
+    &:focus {
+      background-color: color(neutral, xxlight);
+    }
+
+    &--active {
+      &,
+      &:hover,
+      &:focus {
+        color: $color-light;
+        background-color: color(secondary);
+      }
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 $border-width 0 color(neutral, light), inset 0 0 2px 3px $color-focus-ring;
+      z-index: 1;
+    }
+  }
+
+  &__icon {
+    margin-bottom: $spacing--xsmall;
+  }
+
+  &__dropdown {
+    margin-right: 0px;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: -($spacing--xxxsmall);
+      left: 0px;
+      width: 100%;
+      border-bottom: $border-width--large solid color(neutral, light);
+    }
+
+    &--trip-type {
+      order: 1;
+      flex: 1;
+      margin-right: $spacing--xxxsmall;
+      margin-bottom: $spacing--xxxsmall;
+    }
+
+    &--transit-type {
+      order: 2;
+      flex: 1;
+      margin-bottom: $spacing--xxxsmall;
+    }
+
+    &--passengers {
+      order: 3;
+      flex: 1 0 100%;
+      margin-bottom: $spacing--xxxsmall;
+    }
+
+    &--md.travel-details__dropdown--trip-type {
+      order: 2;
+      flex: 1;
+      margin-right: $spacing--xxxsmall;
+    }
+
+    &--md.travel-details__dropdown--transit-type {
+      order: 3;
+      flex: 1;
+    }
+
+    &--md.travel-details__dropdown--passengers {
+      order: 1;
+      flex: 1;
+      margin-right: $spacing--xxxsmall;
+    }
+
+    &--lg.travel-details__dropdown--trip-type {
+      order: 2;
+      flex: 1 1 auto;
+      margin-right: $spacing--xxxsmall;
+    }
+
+    &--lg.travel-details__dropdown--transit-type {
+      order: 3;
+      flex: 1 1 auto;
+    }
+
+    &--lg.travel-details__dropdown--passengers {
+      order: 1;
+      flex: 1 1 auto;
+      margin-right: $spacing--xxxsmall;
+    }
+
+    &--lg {
+      &:focus {
+        outline: none;
+      }
+
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  &__transit-icon {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: calc(100% - #{$spacing * 2});
+    margin: $spacing--small auto;
+    height: 24px;
+    background-color: inherit;
+
+    &:before {
+      content: "";
+      position: absolute;
+      height: $border-width;
+      left: 0;
+      width: 100%;
+      top: calc(50% - #{$border-width / 2});
+      background-color: currentColor;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      right: 0;
+      top: calc(50% - 5px);
+      border-top: $border-width solid currentColor;
+      border-right: $border-width solid currentColor;
+      transform: rotate(45deg);
+    }
+  }
+
+  &__transit-icon-stop {
+    position: relative;
+    top: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    border: $border-width solid currentColor;
+    border-radius: 50%;
+    background-color: inherit;
+  }
+
+  &--minimized {
+    @include flip-in;
+  }
+
+  &--combined {
+    order: 3;
+    flex: 0 0 100%;
+
+    &.travel-details--md {
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: -($spacing--xxsmall);
+        left: 0px;
+        width: 100%;
+        border-bottom: $border-width--large solid color(neutral, light);
+      }
+
+      #{$this}__dropdown {
+        margin: 0 $border-width--large 0 0;
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+
+      .dropdown__toggle {
+        height: calc(100% - #{$border-width--large});
+        margin: 0;
+        padding-left: $spacing--medium;
+        padding-right: $spacing--medium;
+      }
+    }
+
+    &.travel-details--lg {
+      margin: 0;
+      order: 2;
+      flex: 0 0 auto;
+      margin-left: -$border-width--large;
+      padding-left: $border-width--large;
+      z-index: 2;
+
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: -($spacing--xxxsmall);
+        left: 0px;
+        width: 100%;
+        border-bottom: $border-width--large solid color(neutral, light);
+      }
+
+      .dropdown__toggle {
+        height: inherit;
+      }
+    }
+  }
+
+  &--no-border {
+    @include min-width(lg) {
+      &:after {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .nas-filter {
+    &__filters {
+      .travel-details {
+        &--no-border {
+          &::after {
+            display: none;
+          }
+        }
+
+        &__dropdown {
+          .nas-dropdown__toggle {
+            padding: 20px !important;
+            width: 100%;
+            height: 100%;
+
+            &:hover {
+              &:after {
+                display: none;
+              }
+            }
+
+            nas-icon {
+              float: right;
+            }
+
+            &:focus {
+              outline: none;
+            }
+          }
+
+          .nas-dropdown {
+            width: 100%;
+
+            &:focus {
+              outline: none;
+            }
+          }
+
+          &:after {
+            @include min-width(md) {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+
+      .nas-filter__date-combo {
+        .nas-datepicker__date-picker-wrapper {
+          border-bottom: none !important;
+        }
+
+        &--side-by-side {
+          .nas-datepicker-combo__separator {
+            display: block;
+            border-bottom: none !important;
+          }
+        }
+      }
+
+      .nas-airport-select__input-line {
+        border-top: none !important;
+      }
+
+      .nas-airport-select-combo__separator {
+        border-bottom: none !important;
+      }
+
+      .nas-dropdown__toggle {
+        height: 64px !important;
+      }
+
+      .nas-datepicker-combo__separator {
+        display: none;
+      }
+
+      &--lg {
+        .nas-dropdown__toggle {
+          display: flex;
+        }
+
+        .nas-filter__date-combo {
+          .nas-datepicker__date-picker-wrapper {
+            border-bottom: $border-width--large solid color(neutral, light);
+          }
+        }
+
+        .nas-airport-select__input-line {
+          border-top: $border-width--large solid color(neutral, light) !important;
+        }
+
+        .nas-datepicker-combo__separator {
+          border-bottom: $border-width--large solid color(neutral, light) !important;
+        }
+
+        .nas-airport-select-combo__separator {
+          border-bottom: $border-width--large solid color(neutral, light) !important;
+        }
+      }
+    }
+
+    &__rotate {
+      transform: rotate(180deg);
+      @include flip-in-out;
+    }
+
+    &__airport-select {
+      &--no-border {
+        .nas-airport-select__input-line {
+          border-top: none;
+        }
+
+        .nas-airport-select-combo__separator {
+          border-top: none;
+        }
+
+        .nas-airport-select__results-wrapper {
+          margin-top: 0px;
+        }
+
+        .nas-airport-select__results {
+          top: -$border-width--large;
+        }
+
+        .nas-airport-select__icon {
+          bottom: $spacing--medium + $border-width;
+        }
+
+        .nas-airport-select {
+          &:after {
+            display: none;
+          }
+        }
+      }
+
+      .nas-airport-select__input-line {
+        display: none;
+      }
+    }
+
+    &__subsidy-discount {
+      order: 3;
+
+      .nas-subsidy-discount {
+        margin-top: $spacing--medium;
+      }
+    }
+  }
+}
